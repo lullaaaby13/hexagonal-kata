@@ -1,0 +1,13 @@
+spring:
+  data:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/lullaby
+    username: lullaby
+    password: lullaby
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
