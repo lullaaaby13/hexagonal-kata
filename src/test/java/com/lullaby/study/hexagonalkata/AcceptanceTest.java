@@ -1,24 +1,26 @@
 package com.lullaby.study.hexagonalkata;
 
 import com.lullaby.study.hexagonalkata.utils.DatabaseCleanUp;
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
 
+    @LocalServerPort
+    int port;
     @Autowired
     DatabaseCleanUp databaseCleanUp;
-
-    boolean isInitialized = false;
 
     @BeforeEach
     public void beforeEach() {
 
-        if (!isInitialized) {
+        if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
+            RestAssured.port = port;
             databaseCleanUp.afterPropertiesSet();
-            isInitialized = true;
         }
 
         databaseCleanUp.execute();
