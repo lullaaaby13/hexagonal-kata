@@ -2,9 +2,8 @@ package com.lullaby.study.hexagonalkata.utils;
 
 import com.google.common.base.CaseFormat;
 import jakarta.persistence.*;
+import org.hibernate.dialect.Database;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +18,7 @@ import static java.lang.String.format;
 @Service
 public class DatabaseCleanUp implements InitializingBean {
 
+    private final CurrentDatabase database = CurrentDatabase.MARIADB;
     @PersistenceContext
     protected EntityManager entityManager;
 
@@ -45,26 +45,15 @@ public class DatabaseCleanUp implements InitializingBean {
 
     @Transactional
     public void execute() {
-
-
-
         entityManager.flush();
-        // MYSQL, MARIADB
-        entityManager.createNativeQuery("SET foreign_key_checks = 0").executeUpdate();
-        // 그외
-        //entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-
+        entityManager.createNativeQuery(database.getDisableConstraints()).executeUpdate();
         for (EntityMetaData metaData : entityMetaData) {
             entityManager.createNativeQuery(format("TRUNCATE TABLE %s", metaData.tableName())).executeUpdate();
             if (metaData.idColumn() != null) {
                 entityManager.createNativeQuery(format("ALTER TABLE %s AUTO_INCREMENT=1", metaData.tableName())).executeUpdate();
             }
         }
-
-        // MYSQL, MARIADB
-        entityManager.createNativeQuery("SET foreign_key_checks = 1").executeUpdate();
-        // 그외
-        //entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+        entityManager.createNativeQuery(database.getEnableConstraints()).executeUpdate();
     }
 
 }
