@@ -63,6 +63,14 @@ public class AuthUtils {
                 .extract();
     }
 
+    public static String 회원_가입_후_인증_토큰_가져오기(TestMember testMember) {
+        회원_가입_요청(testMember);
+        return 로그인_요청(testMember)
+                .body()
+                .jsonPath()
+                .get("accessToken");
+    }
+
     public static record SignUpRequestBody(String account, String password, String nickname) {}
     public static record SignInRequestBody(String account, String password) {}
 

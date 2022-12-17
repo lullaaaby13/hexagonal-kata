@@ -63,4 +63,9 @@ public class Article {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    // TODO 테스트 끝나면 지워야 됨
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
