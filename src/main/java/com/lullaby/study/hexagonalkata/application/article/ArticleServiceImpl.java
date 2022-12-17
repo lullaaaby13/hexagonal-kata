@@ -20,11 +20,11 @@ public class ArticleServiceImpl implements ArticleService{
         this.memberRepository = memberRepository;
         this.articleRepository = articleRepository;
     }
-
     @Override
     public List<ArticleModel> getArticles(int page, int size) {
-
-        return new ArrayList<>();
+        return this.articleRepository.findAll(page, size).stream()
+                .map(ArticleModel::new)
+                .toList();
     }
 
     @Override

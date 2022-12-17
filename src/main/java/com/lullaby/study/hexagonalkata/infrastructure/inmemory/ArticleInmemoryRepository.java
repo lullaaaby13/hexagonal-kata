@@ -27,6 +27,15 @@ public class ArticleInmemoryRepository implements ArticleRepository {
     }
 
     @Override
+    public List<Article> findAll(int page, int size) {
+        return this.map.values().stream()
+                .sorted(Comparator.comparing(Article::getCreatedAt).reversed())
+                .skip((long) (page - 1) * size)
+                .limit(size)
+                .toList();
+    }
+
+    @Override
     public void save(Article article) {
         if (article.getId() == null ) {
             article.setId(new Random().nextLong(1L, Integer.MAX_VALUE));

@@ -19,7 +19,7 @@ public class ArticleAcceptanceHelper {
                 .header("Authorization", format("Bearer %s", accessToken))
                 .body(requestBody)
                 .when()
-                .post("/article")
+                .post("/articles")
                 .then()
                 .log().all()
                 .extract();
