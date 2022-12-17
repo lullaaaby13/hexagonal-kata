@@ -1,6 +1,7 @@
 package com.lullaby.study.hexagonalkata.domain.model.comment;
 
 import com.lullaby.study.hexagonalkata.domain.model.article.Article;
+import com.lullaby.study.hexagonalkata.domain.model.member.Member;
 
 import java.time.LocalDateTime;
 
@@ -9,16 +10,17 @@ public class Comment {
     private Long id;
     private Long articleId;
     private String content;
-    private Long writer;
+    private Member writer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private Comment() {}
+    private Comment() {
+    }
 
-    public static Comment write(Long articleId, Long writer, String content) {
+    public static Comment write(Long articleId, Member writer, String content) {
         Comment comment = new Comment();
         comment.articleId = articleId;
-        comment.writer =writer;
+        comment.writer = writer;
         comment.content = content;
         comment.createdAt = LocalDateTime.now();
         comment.updatedAt = LocalDateTime.now();
@@ -52,7 +54,7 @@ public class Comment {
         return content;
     }
 
-    public Long getWriter() {
+    public Member getWriter() {
         return writer;
     }
 

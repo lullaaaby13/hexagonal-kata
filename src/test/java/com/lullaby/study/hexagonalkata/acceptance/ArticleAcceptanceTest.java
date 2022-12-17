@@ -15,7 +15,7 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("게시글")
+@DisplayName("인수테스트 > 게시글")
 public class ArticleAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("게시글 작성을 성공 한다.")

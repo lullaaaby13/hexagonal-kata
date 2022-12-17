@@ -1,5 +1,7 @@
 package com.lullaby.study.hexagonalkata.domain.model.article;
 
+import com.lullaby.study.hexagonalkata.domain.model.member.Member;
+
 import java.time.LocalDateTime;
 
 public class Article {
@@ -7,13 +9,13 @@ public class Article {
     private Long id;
     private String title;
     private String content;
-    private Long writer;
+    private Member writer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     private Article() {}
 
-    public static Article write(Long writer, String title, String content) {
+    public static Article write(Member writer, String title, String content) {
         Article article = new Article();
         article.title = title;
         article.content = content;
@@ -52,7 +54,7 @@ public class Article {
         return content;
     }
 
-    public Long getWriter() {
+    public Member getWriter() {
         return writer;
     }
 
