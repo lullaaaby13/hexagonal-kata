@@ -8,6 +8,9 @@ import com.lullaby.study.hexagonalkata.domain.model.comment.CommentRepository;
 import com.lullaby.study.hexagonalkata.domain.model.member.Member;
 import com.lullaby.study.hexagonalkata.domain.model.member.MemberNotFoundException;
 import com.lullaby.study.hexagonalkata.domain.model.member.MemberRepository;
+import com.lullaby.study.hexagonalkata.domain.model.pointhistory.PointAction;
+import com.lullaby.study.hexagonalkata.domain.model.pointhistory.PointHistory;
+import com.lullaby.study.hexagonalkata.domain.model.pointhistory.PointHistoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +22,13 @@ public class CommentServiceImpl implements CommentService{
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
 
-    public CommentServiceImpl(MemberRepository memberRepository, ArticleRepository articleRepository, CommentRepository commentRepository) {
+    private final PointHistoryRepository pointHistoryRepository;
+
+    public CommentServiceImpl(MemberRepository memberRepository, ArticleRepository articleRepository, CommentRepository commentRepository, PointHistoryRepository pointHistoryRepository) {
         this.memberRepository = memberRepository;
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+        this.pointHistoryRepository = pointHistoryRepository;
     }
 
     @Override
@@ -35,12 +41,17 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public Long write(Long writer, WriteCommentCommand command) {
+
         Member member = memberRepository.find(writer)
                 .orElseThrow(MemberNotFoundException::new);
+
         Article article = articleRepository.find(command.articleId())
                 .orElseThrow(ArticleNotFoundException::new);
 
         Comment comment = Comment.write(article, member, command.content());
+
+        PointHistory pointHistory = PointHistory.create(member, PointAction.WRITE_COMMENT);
+        pointHistoryRepository.save(pointHistory);
 
         return commentRepository.save(comment).getId();
     }

@@ -10,6 +10,8 @@ public class Member {
 
     private String nickname;
 
+    private Integer point;
+
     private Member() {}
 
     public static Member join(String account, String password, String nickname) {
@@ -17,11 +19,14 @@ public class Member {
         member.account = account;
         member.password = password;
         member.nickname = nickname;
-        member.isValid();
+        member.point = 0;
+
+        member.validate();
+
         return member;
     }
 
-    private void isValid() {
+    private void validate() {
         if (this.account.length() < 4 || this.account.length() > 20) {
             throw new MemberFieldInvalidException();
         }
@@ -49,6 +54,10 @@ public class Member {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public Integer getPoint() {
+        return point;
     }
 
     // TODO 테스트 개발 끝나면 지워야 됨

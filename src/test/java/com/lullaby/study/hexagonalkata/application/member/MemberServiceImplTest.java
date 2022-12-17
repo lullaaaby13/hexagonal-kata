@@ -1,7 +1,8 @@
 package com.lullaby.study.hexagonalkata.application.member;
 
-import com.lullaby.study.hexagonalkata.domain.model.member.Member;
 import com.lullaby.study.hexagonalkata.domain.model.member.MemberFieldInvalidException;
+import com.lullaby.study.hexagonalkata.infrastructure.inmemory.MemberInmemoryRepository;
+import com.lullaby.study.hexagonalkata.infrastructure.inmemory.PointHistoryInmemoryRepository;
 import com.lullaby.study.hexagonalkata.infrastructure.jpa.MemberRepositoryAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,10 +10,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("회원 서비스 테스트")
-class MemberServiceTest {
+class MemberServiceImplTest {
 
-    MemberService memberService = new MemberService(new MemberRepositoryAdapter());
-
+    MemberServiceImpl memberServiceImpl = new MemberServiceImpl(new MemberInmemoryRepository(), new PointHistoryInmemoryRepository());
 
     @DisplayName("회원 가입 성공")
     @Test
@@ -20,7 +20,7 @@ class MemberServiceTest {
         // Given
         JoinCommand joinCommand = new JoinCommand("normal", "1234", "lullaby");
         // when
-        memberService.join(joinCommand);
+        memberServiceImpl.join(joinCommand);
     }
 
     @DisplayName("계정 길이가 4 미만일 시 에러")
@@ -30,7 +30,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("nor", "1234", "lullaby");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 
@@ -41,7 +41,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("nornornornornornornornornor", "1234", "lullaby");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 
@@ -52,7 +52,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("normal", "123", "lullaby");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 
@@ -63,7 +63,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("normal", "123456789012345678901234567890", "lullaby");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 
@@ -74,7 +74,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("normal", "1234", "lul");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 
@@ -85,7 +85,7 @@ class MemberServiceTest {
             // Given
             JoinCommand joinCommand = new JoinCommand("normal", "1234", "lullabylullabylullabylullabylullaby");
             // when
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         });
     }
 

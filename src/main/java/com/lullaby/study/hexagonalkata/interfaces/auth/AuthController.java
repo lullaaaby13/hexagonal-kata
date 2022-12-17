@@ -2,7 +2,7 @@ package com.lullaby.study.hexagonalkata.interfaces.auth;
 
 import com.lullaby.study.hexagonalkata.application.member.AlreadyExistMemberException;
 import com.lullaby.study.hexagonalkata.application.member.JoinCommand;
-import com.lullaby.study.hexagonalkata.application.member.MemberService;
+import com.lullaby.study.hexagonalkata.application.member.MemberServiceImpl;
 import com.lullaby.study.hexagonalkata.security.AuthenticateFailException;
 import com.lullaby.study.hexagonalkata.security.AuthenticationService;
 import com.lullaby.study.hexagonalkata.security.dto.SignInCommand;
@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
 
-    public AuthController(AuthenticationService authenticationService, MemberService memberService) {
+    public AuthController(AuthenticationService authenticationService, MemberServiceImpl memberServiceImpl) {
         this.authenticationService = authenticationService;
-        this.memberService = memberService;
+        this.memberServiceImpl = memberServiceImpl;
     }
 
     @PostMapping("sign-up")
     public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequest request) {
         try {
             JoinCommand joinCommand = new JoinCommand(request.getAccount(), request.getPassword(), request.getNickname());
-            memberService.join(joinCommand);
+            memberServiceImpl.join(joinCommand);
         } catch (AlreadyExistMemberException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
