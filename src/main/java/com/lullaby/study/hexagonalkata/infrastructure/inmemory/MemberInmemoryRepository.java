@@ -31,7 +31,7 @@ public class MemberInmemoryRepository implements MemberRepository {
     @Override
     public void save(Member member) {
         if (member.getId() == null ) {
-            member.setId(new Random().nextLong());
+            member.setId(new Random().nextLong(1L, Integer.MAX_VALUE));
         }
         this.map.put(member.getId(), member);
     }

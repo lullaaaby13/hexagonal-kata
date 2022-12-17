@@ -29,7 +29,7 @@ public class ArticleInmemoryRepository implements ArticleRepository {
     @Override
     public void save(Article article) {
         if (article.getId() == null ) {
-            article.setId(new Random().nextLong());
+            article.setId(new Random().nextLong(1L, Integer.MAX_VALUE));
         }
         this.map.put(article.getId(), article);
     }
