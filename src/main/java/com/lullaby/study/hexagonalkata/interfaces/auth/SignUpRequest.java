@@ -1,9 +1,14 @@
 package com.lullaby.study.hexagonalkata.interfaces.auth;
 
 
+import jakarta.validation.constraints.Size;
+
 public class SignUpRequest {
+    @Size(min = 4, max = 20)
     private final String account;
+    @Size(min = 4, max = 20)
     private final String password;
+    @Size(min = 4, max = 20)
     private final String nickname;
 
     public SignUpRequest(String account, String password, String nickname) {
