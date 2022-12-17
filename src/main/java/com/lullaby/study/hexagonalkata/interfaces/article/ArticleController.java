@@ -31,8 +31,8 @@ public class ArticleController {
     @PostMapping
     public ResponseEntity<?> writeArticle(@AuthenticationPrincipal AuthenticatedUser user, @Validated @RequestBody WriteArticleRequest request) {
         WriteArticleCommand command = new WriteArticleCommand(request.getTitle(), request.getContent());
-        articleService.write(user.getUserId(), command);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Long articleId = articleService.write(user.getUserId(), command);
+        return ResponseEntity.status(HttpStatus.CREATED).body(articleId);
     }
 
 }

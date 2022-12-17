@@ -22,9 +22,10 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void write(Long writer, WriteArticleCommand command) {
+    public Long write(Long writer, WriteArticleCommand command) {
         Article article = Article.write(writer, command.title(), command.content());
         articleRepository.save(article);
+        return article.getId();
     }
 
 }

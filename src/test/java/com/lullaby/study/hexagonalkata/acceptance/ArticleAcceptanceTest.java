@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 
 import static com.lullaby.study.hexagonalkata.acceptance.AuthUtils.*;
 import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@DisplayName("게시글")
 public class ArticleAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("게시글 작성을 성공 한다.")
@@ -21,19 +24,11 @@ public class ArticleAcceptanceTest extends AcceptanceTest {
         // Given
         String accessToken = 회원_가입_후_인증_토큰_가져오기(사용자_1);
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", format("Bearer %s", accessToken))
-                .body(new CreateArticleRequestBody("title", "content"))
-                .when()
-                .post("/article")
-                .then()
-                .log().all()
-                .extract();
-
-        Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        ExtractableResponse<Response> response = 게시글_작성(accessToken, 게시글_1);
+        // Then
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        Long articleId = response.body().as(Long.class);
+        assertNotNull(articleId);
     }
 
     @DisplayName("제목을 입력 하지 않으면 게시글 작성에 실패 한다.")
@@ -42,19 +37,9 @@ public class ArticleAcceptanceTest extends AcceptanceTest {
         // Given
         String accessToken = 회원_가입_후_인증_토큰_가져오기(사용자_1);
         // When
-        ExtractableResponse<Response> response = RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", format("Bearer %s", accessToken))
-                .body(new CreateArticleRequestBody(null, "content"))
-                .when()
-                .post("/article")
-                .then()
-                .log().all()
-                .extract();
-
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        ExtractableResponse<Response> response = 게시글_작성(accessToken, new CreateArticleRequestBody("title", null));
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
 
     @DisplayName("본문을 입력 하지 않으면 게시글 작성에 실패 한다.")
@@ -63,20 +48,24 @@ public class ArticleAcceptanceTest extends AcceptanceTest {
         // Given
         String accessToken = 회원_가입_후_인증_토큰_가져오기(사용자_1);
         // When
-        ExtractableResponse<Response> response = RestAssured
+        ExtractableResponse<Response> response = 게시글_작성(accessToken, new CreateArticleRequestBody(null, "content"));
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+    }
+
+    public static record CreateArticleRequestBody(String title, String content) {}
+    public static final CreateArticleRequestBody 게시글_1 = new CreateArticleRequestBody("title", "content");
+    public static ExtractableResponse<Response> 게시글_작성(String accessToken, CreateArticleRequestBody requestBody) {
+        return RestAssured
                 .given()
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", format("Bearer %s", accessToken))
-                .body(new CreateArticleRequestBody("title", null))
+                .body(requestBody)
                 .when()
                 .post("/article")
                 .then()
                 .log().all()
                 .extract();
-
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
     }
-
-    public static record CreateArticleRequestBody(String title, String content) {}
 }

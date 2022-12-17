@@ -8,5 +8,5 @@ public interface ArticleService {
 
     List<ArticleModel> getArticles();
 
-    void write(Long writer, WriteArticleCommand command);
+    Long write(Long writer, WriteArticleCommand command);
 }
