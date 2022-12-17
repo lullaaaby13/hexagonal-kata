@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService{
         Article article = articleRepository.find(command.articleId())
                 .orElseThrow(ArticleNotFoundException::new);
 
-        Comment comment = Comment.write(article.getId(), member, command.content());
+        Comment comment = Comment.write(article, member, command.content());
 
         return commentRepository.save(comment).getId();
     }

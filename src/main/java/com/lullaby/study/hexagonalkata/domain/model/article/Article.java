@@ -1,8 +1,10 @@
 package com.lullaby.study.hexagonalkata.domain.model.article;
 
+import com.lullaby.study.hexagonalkata.domain.model.comment.Comment;
 import com.lullaby.study.hexagonalkata.domain.model.member.Member;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Article {
 
@@ -13,6 +15,7 @@ public class Article {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // private List<Comment> comments;
     private Article() {}
 
     public static Article write(Member writer, String title, String content) {

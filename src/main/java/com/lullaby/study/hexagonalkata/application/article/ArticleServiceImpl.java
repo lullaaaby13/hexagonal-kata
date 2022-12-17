@@ -22,7 +22,8 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public List<ArticleModel> getArticles() {
+    public List<ArticleModel> getArticles(int page, int size) {
+
         return new ArrayList<>();
     }
 

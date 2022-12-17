@@ -1,6 +1,6 @@
-package com.lullaby.study.hexagonalkata.acceptance;
+package com.lullaby.study.hexagonalkata.acceptance.auth;
 
-import com.lullaby.study.hexagonalkata.AcceptanceTest;
+import com.lullaby.study.hexagonalkata.acceptance.AcceptanceTest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
-import static com.lullaby.study.hexagonalkata.acceptance.AuthUtils.*;
+import static com.lullaby.study.hexagonalkata.acceptance.auth.AuthAcceptanceHelper.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -32,7 +32,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"abc", "tooooooooooooooo_long"})
     void fail_sign_up_1(String account) {
         // Given
-        AuthUtils.SignUpRequestBody signUpRequestBody = new AuthUtils.SignUpRequestBody(account, "1234", "abcdef");
+        SignUpRequestBody signUpRequestBody = new SignUpRequestBody(account, "1234", "abcdef");
         // When
         ExtractableResponse<Response> response = 회원_가입_요청(signUpRequestBody);
         // Then
@@ -44,7 +44,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"abc", "tooooooooooooooo_long"})
     void fail_sign_up_2(String password) {
         // Given
-        AuthUtils.SignUpRequestBody signUpRequestBody = new AuthUtils.SignUpRequestBody("abcdef", password, "abcdef");
+        SignUpRequestBody signUpRequestBody = new SignUpRequestBody("abcdef", password, "abcdef");
         // When
         ExtractableResponse<Response> response = 회원_가입_요청(signUpRequestBody);
         // Then
@@ -56,7 +56,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"abc", "tooooooooooooooo_long"})
     void fail_sign_up_3(String nickname) {
         // Given
-        AuthUtils.SignUpRequestBody signUpRequestBody = new AuthUtils.SignUpRequestBody("abcdef", "1234", nickname);
+        SignUpRequestBody signUpRequestBody = new SignUpRequestBody("abcdef", "1234", nickname);
         // When
         ExtractableResponse<Response> response = 회원_가입_요청(signUpRequestBody);
         // Then

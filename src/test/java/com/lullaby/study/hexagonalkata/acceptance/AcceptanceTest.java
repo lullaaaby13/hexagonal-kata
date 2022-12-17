@@ -1,4 +1,4 @@
-package com.lullaby.study.hexagonalkata;
+package com.lullaby.study.hexagonalkata.acceptance;
 
 import com.lullaby.study.hexagonalkata.infrastructure.inmemory.MemberInmemoryRepository;
 import com.lullaby.study.hexagonalkata.utils.DatabaseCleanUp;

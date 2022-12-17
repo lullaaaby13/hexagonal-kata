@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ArticleService {
 
-    List<ArticleModel> getArticles();
+    List<ArticleModel> getArticles(int page, int size);
 
     Long write(Long writer, WriteArticleCommand command);
 }

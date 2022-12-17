@@ -8,18 +8,17 @@ import java.time.LocalDateTime;
 public class Comment {
 
     private Long id;
-    private Long articleId;
+    private Article article;
     private String content;
     private Member writer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private Comment() {
-    }
+    private Comment() {}
 
-    public static Comment write(Long articleId, Member writer, String content) {
+    public static Comment write(Article article, Member writer, String content) {
         Comment comment = new Comment();
-        comment.articleId = articleId;
+        comment.article = article;
         comment.writer = writer;
         comment.content = content;
         comment.createdAt = LocalDateTime.now();
@@ -31,7 +30,7 @@ public class Comment {
     }
 
     private void validate() {
-        if (this.articleId == null) {
+        if (this.article == null) {
             throw new CommentFieldInvalidException();
         }
         if (content == null || content.trim().length() == 0) {
@@ -46,8 +45,8 @@ public class Comment {
         return id;
     }
 
-    public Long getArticleId() {
-        return articleId;
+    public Article getArticle() {
+        return article;
     }
 
     public String getContent() {

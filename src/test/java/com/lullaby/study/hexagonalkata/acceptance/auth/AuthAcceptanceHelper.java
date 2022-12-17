@@ -1,15 +1,14 @@
-package com.lullaby.study.hexagonalkata.acceptance;
+package com.lullaby.study.hexagonalkata.acceptance.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
-public class AuthUtils {
+public class AuthAcceptanceHelper {
 
     public static TestMember 사용자_1 = new TestMember("test_user_1", "1234", "apple");
     public static TestMember 사용자_2 = new TestMember("test_user_2", "1234", "banana");
-
 
     public static ExtractableResponse<Response> 회원_가입_요청(SignUpRequestBody requestBody) {
         return RestAssured
