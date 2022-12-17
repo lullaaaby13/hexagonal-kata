@@ -4,10 +4,7 @@ import com.lullaby.study.hexagonalkata.domain.model.comment.Comment;
 import com.lullaby.study.hexagonalkata.domain.model.comment.CommentRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Repository
 public class CommentInmemoryRepository implements CommentRepository {
@@ -20,6 +17,14 @@ public class CommentInmemoryRepository implements CommentRepository {
             return Optional.of(map.get(commentId));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<Comment> findByArticleId(Long articleId) {
+        return this.map.values().stream()
+                .filter(it -> it.getArticle().getId().equals(articleId))
+                .sorted(Comparator.comparing(Comment::getCreatedAt).reversed())
+                .toList();
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.lullaby.study.hexagonalkata.domain.model.member.MemberNotFoundExcepti
 import com.lullaby.study.hexagonalkata.domain.model.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommentServiceImpl implements CommentService{
 
@@ -21,6 +23,14 @@ public class CommentServiceImpl implements CommentService{
         this.memberRepository = memberRepository;
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public List<CommentModel> getComments(Long articleId) {
+        return this.commentRepository.findByArticleId(articleId)
+                .stream()
+                .map(CommentModel::new)
+                .toList();
     }
 
     @Override
