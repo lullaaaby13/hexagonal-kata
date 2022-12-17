@@ -4,7 +4,6 @@ import com.lullaby.study.hexagonalkata.AcceptanceTest;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import static com.lullaby.study.hexagonalkata.acceptance.AuthUtils.*;
-import static com.lullaby.study.hexagonalkata.acceptance.AuthUtils.사용자_1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -77,7 +75,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    /// 로그인 (sign-in)
     @DisplayName("올바른 계정명과 비밀번호로 로그인 시 성공 한다.")
     @Test
     void success_sign_in() {
@@ -88,8 +85,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // Then
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         JsonPath jsonPath = response.body().jsonPath();
-        assertNotNull(jsonPath.get("$.accessToken"));
+        assertNotNull(jsonPath.get("accessToken"));
+        assertNotNull(jsonPath.get("refreshToken"));
     }
+
 
     @DisplayName("계정명을 입력 하지 않으면 로그인에 실패 한다.")
     @Test
@@ -121,7 +120,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // When
         ExtractableResponse<Response> response = 로그인_요청(new SignInRequestBody(사용자_1.account(), "wrong_password"));
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.statusCode());
     }
 
     @DisplayName("존재 하지 않는 계정으로 로그인 시도 시 로그인에 실패 한다.")
@@ -132,7 +131,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // When
         ExtractableResponse<Response> response = 로그인_요청(new SignInRequestBody("not_exist", 사용자_1.password()));
         // Then
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.statusCode());
     }
 
 }

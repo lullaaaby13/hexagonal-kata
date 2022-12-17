@@ -36,4 +36,9 @@ public class MemberInmemoryRepository implements MemberRepository {
         this.map.put(member.getId(), member);
     }
 
+    // TODO 테스트 끝나면 지워야 됨
+    public void clean() {
+        this.map.clear();
+    }
+
 }
