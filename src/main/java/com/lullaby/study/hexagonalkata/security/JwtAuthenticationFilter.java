@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final List<String> NOT_FILTERED_URL = List.of("/auth/sign-up", "/auth/sign-in", "/health-check", "/error");
+    private final List<String> NOT_FILTERED_URL = List.of("/auth/sign-up", "/auth/sign-in", "/health-check", "/error", "/h2-console");
 
     private final JwtProvider jwtProvider;
 

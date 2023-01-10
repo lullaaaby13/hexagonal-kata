@@ -26,7 +26,7 @@ public class AcceptanceTest {
             databaseCleanUp.afterPropertiesSet();
         }
 
-        databaseCleanUp.execute();
+        databaseCleanUp.cleanUp();
         // TODO 테스트 끝나면 지워야 됨
         memberInmemoryRepository.clean();
     }

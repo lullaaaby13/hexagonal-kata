@@ -2,58 +2,76 @@ package com.lullaby.study.hexagonalkata.utils;
 
 import com.google.common.base.CaseFormat;
 import jakarta.persistence.*;
-import org.hibernate.dialect.Database;
+import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 public class DatabaseCleanUp implements InitializingBean {
-
-    private final CurrentDatabase database = CurrentDatabase.MARIADB;
     @PersistenceContext
     protected EntityManager entityManager;
-
-    private List<EntityMetaData> entityMetaData = new ArrayList<>();
+    private final Set<EntityMetaData> entityMetaData = new HashSet<>();
+    private final Map<String, EntityMetaData> entityMap = new HashMap<>();
+    private final CleanUpStrategy cleanUpStrategy = new H2CleanUp();
 
     @Override
     public void afterPropertiesSet() {
-        this.entityMetaData = entityManager.getMetamodel().getEntities().stream()
-                .filter(it -> it.getJavaType().getAnnotation(Entity.class) != null)
-                .map(entityClass -> {
-                    String classNameToTableName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entityClass.getName());
-                    Table tableAnnotation = entityClass.getJavaType().getAnnotation(Table.class);
-                    String tableName = Objects.nonNull(tableAnnotation) ? tableAnnotation.name() : classNameToTableName;
+        entityMap.clear();
 
-                    String idColumn = Arrays.stream(entityClass.getJavaType().getDeclaredFields())
-                            .filter(field -> field.getAnnotation(Id.class) != null)
-                            .map(Field::getName)
-                            .findFirst()
-                            .orElse(null);
-                    return new EntityMetaData(tableName, idColumn);
-                })
+        List<EntityType<?>> entityTypes = entityManager.getMetamodel().getEntities().stream()
+                .filter(it -> it.getJavaType().getAnnotation(Entity.class) != null)
                 .toList();
+
+        for (EntityType<?> entityType : entityTypes) {
+            String tableName = findTableName(entityType);
+            String idColumn = findIdColumn(entityType);
+            this.entityMetaData.add(new EntityMetaData(tableName, idColumn));
+            this.entityMap.put(tableName, new EntityMetaData(tableName, idColumn));
+        }
+
     }
 
-    @Transactional
-    public void execute() {
-        entityManager.flush();
-        entityManager.createNativeQuery(database.getDisableConstraints()).executeUpdate();
-        for (EntityMetaData metaData : entityMetaData) {
-            entityManager.createNativeQuery(format("TRUNCATE TABLE %s", metaData.tableName())).executeUpdate();
-            if (metaData.idColumn() != null) {
-                entityManager.createNativeQuery(format("ALTER TABLE %s AUTO_INCREMENT=1", metaData.tableName())).executeUpdate();
-            }
+    private String findTableName(EntityType<?> entityType) {
+
+        Table tableAnnotation = entityType.getJavaType().getAnnotation(Table.class);
+
+        if (nonNull(tableAnnotation)) {
+            return tableAnnotation.name();
         }
-        entityManager.createNativeQuery(database.getEnableConstraints()).executeUpdate();
+
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entityType.getName());
+    }
+    private String findIdColumn(EntityType<?> entityType) {
+        Field idField = Arrays.stream(entityType.getJavaType().getDeclaredFields())
+                .filter(field -> nonNull(field.getAnnotation(Id.class)))
+                .findFirst()
+                .orElse(null);
+
+        if (isNull(idField)) {
+            throw new RuntimeException("ID 컬럼을 찾을 수 없습니다.");
+        }
+
+        Column column = idField.getAnnotation(Column.class);
+
+        if (nonNull(column)) {
+            return column.name();
+        }
+
+        return idField.getName();
+    }
+
+
+
+    @Transactional
+    public void cleanUp() {
+        this.cleanUpStrategy.clean(entityManager, entityMap);
     }
 
 }
